@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0B0F14;
+  --color-surface: #121821;
+  --color-surface-2: #18202B;
+  --color-border: #243040;
+  --color-text: #E6EDF3;
+  --color-muted: #8B98A9;
+  --color-accent: #34D399;
+  --color-accent-2: #60A5FA;
+  --color-warn: #F59E0B;
+  --color-danger: #F87171;
+  --color-chart-1: #34D399;
+  --color-chart-2: #60A5FA;
+  --color-chart-3: #F59E0B;
+  --color-chart-4: #F472B6;
+  --color-chart-5: #A78BFA;
+  --color-chart-6: #22D3EE;
+  --color-chart-7: #FB923C;
+  --color-chart-8: #94A3B8; /* "Otros" */
+
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-card: 12px;
+  --radius-button: 8px;
+
+  --animate-fade-up: fade-up 0.5s ease both;
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@layer base {
+  html { color-scheme: dark; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    /* Cuadrícula sutil solo con CSS */
+    background-image:
+      linear-gradient(to right, rgb(36 48 64 / 0.35) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(36 48 64 / 0.35) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: center top;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent-2);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+}
+
+/* Aparición al hacer scroll: useInView agrega .is-visible la primera vez que el elemento entra en pantalla */
+.reveal { opacity: 0; }
+.reveal.is-visible { animation: fade-up 0.6s ease both; animation-delay: var(--reveal-delay, 0ms); }
+
+/* Barras que crecen cuando su tarjeta se hace visible */
+.grow-x { transform-origin: left; }
+.grow-y { transform-origin: bottom; }
+.is-visible .grow-x { animation: grow-x 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.is-visible .grow-y { animation: grow-y 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes grow-x { from { transform: scaleX(0); } }
+@keyframes grow-y { from { transform: scaleY(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; }
+}
+
+/* Hover blanco/negro, solo en las tarjetas con la clase card-invert (las de "Qué obtienes"). Se redefinen los tokens para que los hijos
+   (text-muted, bg-surface-2, text-accent...) mantengan contraste AA sobre blanco.
+   Sin capa y con !important para ganarle al fondo inline de algunas tarjetas. */
+.card-invert:hover {
+  background-color: #fff !important;
+  color: #000;
+  --color-text: #000;
+  --color-muted: #4b5563;
+  --color-border: #d1d5db;
+  --color-surface-2: #e5e7eb;
+  --color-accent: #047857;
+  --color-accent-2: #1d4ed8;
+  --color-warn: #b45309;
+  --color-danger: #b91c1c;
+}
