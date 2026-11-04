@@ -1,25 +1,27 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import { parseRepo } from '@/features/search/utils/parseRepo'
 
-// Acepta "usuario/repo", "github.com/usuario/repo" o la URL completa (con .git o subrutas)
-const REPO_RE = /^(?:(?:https?:\/\/)?(?:www\.)?github\.com\/)?([\w.-]+)\/([\w.-]+?)(?:\.git)?(?:[/?#].*)?$/i
+export const INVALID_FORMAT_MESSAGE = 'Formato no válido. Usa usuario/repo o la URL de GitHub.'
 
-export function parseRepo(input: string): string | null {
-  const m = input.trim().match(REPO_RE)
-  return m ? `${m[1]}/${m[2]}` : null
-}
-
-export function useSearchBar(onSearch: (repo: string) => void) {
+export function useSearchBar(onSearch: (repo: string) => void, disabled = false) {
   const [value, setValue] = useState('')
   const [error, setError] = useState<string | null>(null)
 
-  const submit = (e: FormEvent) => {
-    e.preventDefault()
-    const repo = parseRepo(value)
-    if (!repo) return setError('Escribe algo como usuario/repo o pega la URL del repositorio.')
+  // Al volver a escribir desaparece el mensaje de error
+  const change = (next: string) => {
+    setValue(next)
     setError(null)
-    onSearch(repo)
   }
 
-  return { value, setValue, error, submit }
+  const submit = (e: FormEvent) => {
+    e.preventDefault()
+    if (disabled) return
+    const parsed = parseRepo(value)
+    if (!parsed) return setError(INVALID_FORMAT_MESSAGE)
+    setError(null)
+    onSearch(`${parsed.owner}/${parsed.repo}`)
+  }
+
+  return { value, setValue: change, error, submit }
 }
