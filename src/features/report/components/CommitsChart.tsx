@@ -1,10 +1,8 @@
 import { Card } from '@/shared/components/Card'
 import type { WeeklyCommits } from '@/shared/types'
+import { formatShortDate as weekLabel } from '@/shared/utils/formatters'
 
 const MAX_WEEKS = 6
-const dateFmt = new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short', timeZone: 'UTC' })
-// "2026-10-26" -> "26 oct"
-const weekLabel = (week: string) => dateFmt.format(new Date(`${week}T00:00:00Z`)).replace('.', '')
 
 // Placeholder CSS. TODO: reemplazar por una gráfica de recharts.
 export function CommitsChart({ data }: { data: WeeklyCommits[] }) {
@@ -19,7 +17,11 @@ export function CommitsChart({ data }: { data: WeeklyCommits[] }) {
       ) : (
         <ul className="mt-4 grid grid-cols-6 gap-2">
           {weeks.map((d, i) => (
-            <li key={d.week} className="flex flex-col items-center gap-1.5" title={`Semana del ${weekLabel(d.week)}: ${d.commits} commits`}>
+            <li
+              key={d.week}
+              className="flex flex-col items-center gap-1.5"
+              title={`Semana del ${weekLabel(d.week)}: ${d.commits} commits`}
+            >
               <span className="font-mono text-sm">{d.commits}</span>
               <div className="flex h-28 w-full items-end">
                 <div
