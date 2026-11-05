@@ -3,7 +3,6 @@ const DAY_MS = 24 * 60 * 60 * 1000
 const numberFmt = new Intl.NumberFormat('es', { notation: 'compact' })
 const percentFmt = new Intl.NumberFormat('es', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
 const dateFmt = new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
-const shortDateFmt = new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short', timeZone: 'UTC' })
 const monthFmt = new Intl.DateTimeFormat('es', { month: 'short', timeZone: 'UTC' })
 const monthYearFmt = new Intl.DateTimeFormat('es', { month: 'short', year: 'numeric', timeZone: 'UTC' })
 
@@ -18,9 +17,6 @@ export const formatPercent = (n: number) => percentFmt.format(n / 100)
 
 // "2026-10-28" -> "28 oct 2026"
 export const formatDate = (iso: string) => dateFmt.format(toUtcDate(iso)).replace('.', '')
-
-// "2026-10-28" -> "28 oct"
-export const formatShortDate = (iso: string) => shortDateFmt.format(toUtcDate(iso)).replace('.', '')
 
 // "2026-08-10" -> "ago", o "ago 2026" con año
 export const formatMonth = (iso: string, withYear = false) =>
