@@ -1,38 +1,81 @@
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import type { TooltipContentProps } from 'recharts'
 import { Card } from '@/shared/components/Card'
 import type { WeeklyCommits } from '@/shared/types'
-import { formatShortDate as weekLabel } from '@/shared/utils/formatters'
+import { formatDate, formatMonth } from '@/shared/utils/formatters'
 
-const MAX_WEEKS = 6
+// getCommits pide máximo 100 commits
+const MAX_COMMITS = 100
+const tickStyle = { fill: 'var(--color-muted)', fontSize: 12 }
 
-// Placeholder CSS. TODO: reemplazar por una gráfica de recharts.
+// Cada semana es del mes de su lunes ("AAAA-MM" del ISO, ya en UTC). La primera semana de cada mes lleva la etiqueta,
+// con año en la primera y cuando cambia; los meses alternan tono (fillOpacity se mezcla sobre las props de <Bar>)
+function groupByMonth(data: WeeklyCommits[]) {
+  const labels: Record<string, string> = {}
+  let prev = ''
+  let months = 0
+  const bars = data.map((d) => {
+    if (d.week.slice(0, 7) !== prev.slice(0, 7)) {
+      labels[d.week] = formatMonth(d.week, d.week.slice(0, 4) !== prev.slice(0, 4))
+      prev = d.week
+      months++
+    }
+    return { ...d, fillOpacity: months % 2 ? 1 : 0.6 }
+  })
+  return { bars, labels }
+}
+
+function CommitsTooltip({ active, payload, label }: TooltipContentProps) {
+  if (!active || !payload?.length) return null
+  const commits = Number(payload[0].value)
+  return (
+    <div className="rounded-button border border-border bg-surface px-3 py-2 font-sans text-sm text-text">
+      Semana del {formatDate(String(label))} ·{' '}
+      <span className="font-mono">
+        {commits} {commits === 1 ? 'commit' : 'commits'}
+      </span>
+    </div>
+  )
+}
+
 export function CommitsChart({ data }: { data: WeeklyCommits[] }) {
-  const weeks = data.slice(-MAX_WEEKS)
-  const max = Math.max(1, ...weeks.map((d) => d.commits))
+  const total = data.reduce((sum, d) => sum + d.commits, 0)
+  const { bars, labels } = groupByMonth(data)
   return (
     <Card>
       <h3 className="font-semibold">Commits por semana</h3>
-      <p className="text-sm text-muted">Últimas {MAX_WEEKS} semanas, cada una desde su lunes</p>
-      {weeks.length === 0 ? (
-        <p className="mt-4 text-sm text-muted">Sin actividad para mostrar.</p>
+      {data.length === 0 ? (
+        <p className="mt-4 text-sm text-muted">Este repositorio no tiene commits recientes.</p>
       ) : (
-        <ul className="mt-4 grid grid-cols-6 gap-2">
-          {weeks.map((d, i) => (
-            <li
-              key={d.week}
-              className="flex flex-col items-center gap-1.5"
-              title={`Semana del ${weekLabel(d.week)}: ${d.commits} commits`}
-            >
-              <span className="font-mono text-sm">{d.commits}</span>
-              <div className="flex h-28 w-full items-end">
-                <div
-                  className="grow-y w-full rounded-t-sm bg-accent"
-                  style={{ height: `${Math.max(4, (d.commits / max) * 100)}%`, animationDelay: `${i * 80}ms` }}
+        <>
+          <p className="text-sm text-muted">
+            {total === 1 ? 'Último commit' : `Últimos ${total} commits, agrupados por semana`}
+            {total === MAX_COMMITS && ' (GitHub entrega los últimos 100)'}
+          </p>
+          {/* font-mono lo heredan las etiquetas de los ejes */}
+          <div className="mt-4 h-[260px] font-mono">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={bars} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
+                <CartesianGrid vertical={false} stroke="var(--color-border)" />
+                {/* Solo la primera semana de cada mes es tick; Recharts oculta las que chocarían */}
+                <XAxis
+                  dataKey="week"
+                  ticks={Object.keys(labels)}
+                  tickFormatter={(week: string) => labels[week]}
+                  interval="preserveStartEnd"
+                  minTickGap={8}
+                  tickMargin={6}
+                  tick={tickStyle}
+                  tickLine={false}
+                  axisLine={{ stroke: 'var(--color-border)' }}
                 />
-              </div>
-              <span className="whitespace-nowrap text-[11px] text-muted">{weekLabel(d.week)}</span>
-            </li>
-          ))}
-        </ul>
+                <YAxis allowDecimals={false} width={32} tick={tickStyle} tickLine={false} axisLine={false} />
+                <Tooltip content={CommitsTooltip} cursor={{ fill: 'var(--color-surface-2)' }} />
+                <Bar dataKey="commits" fill="var(--color-accent)" radius={[4, 4, 0, 0]} maxBarSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </>
       )}
     </Card>
   )

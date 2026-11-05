@@ -4,6 +4,8 @@ const numberFmt = new Intl.NumberFormat('es', { notation: 'compact' })
 const percentFmt = new Intl.NumberFormat('es', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
 const dateFmt = new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
 const shortDateFmt = new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short', timeZone: 'UTC' })
+const monthFmt = new Intl.DateTimeFormat('es', { month: 'short', timeZone: 'UTC' })
+const monthYearFmt = new Intl.DateTimeFormat('es', { month: 'short', year: 'numeric', timeZone: 'UTC' })
 
 // "AAAA-MM-DD" se lee como medianoche UTC para que la zona horaria no corra el día
 const toUtcDate = (iso: string) => new Date(`${iso}T00:00:00Z`)
@@ -19,6 +21,10 @@ export const formatDate = (iso: string) => dateFmt.format(toUtcDate(iso)).replac
 
 // "2026-10-28" -> "28 oct"
 export const formatShortDate = (iso: string) => shortDateFmt.format(toUtcDate(iso)).replace('.', '')
+
+// "2026-08-10" -> "ago", o "ago 2026" con año
+export const formatMonth = (iso: string, withYear = false) =>
+  (withYear ? monthYearFmt : monthFmt).format(toUtcDate(iso)).replace('.', '')
 
 const ago = (n: number, singular: string, plural: string) => `hace ${n} ${n === 1 ? singular : plural}`
 
