@@ -4,8 +4,9 @@ import type { Contributor } from '@/shared/types'
 export function ContributorsList({ contributors }: { contributors: Contributor[] }) {
   // El 1 evita dividir entre 0 si todos tienen 0 commits
   const max = Math.max(1, ...contributors.map((c) => c.commits))
+  // min-w-0: en móvil el grid de ReportPage no limita el ancho y un usuario largo ensancharía la columna
   return (
-    <Card>
+    <Card className="min-w-0">
       <h3 className="font-semibold">Contribuidores</h3>
       {contributors.length === 0 ? (
         <p className="mt-4 text-sm text-muted">No hay contribuidores para mostrar.</p>
