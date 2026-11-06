@@ -6,8 +6,8 @@ import { formatDate, formatMonth } from '@/shared/utils/formatters'
 
 // getCommits pide máximo 100 commits
 const MAX_COMMITS = 100
-// Con más barras, a 375 px cada una mide menos de 8 px
-const MAX_BARS = 26
+// Semanas que se muestran (acordado con el equipo): solo la actividad reciente
+const MAX_BARS = 16
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000
 const tickStyle = { fill: 'var(--color-muted)', fontSize: 12 }
 
