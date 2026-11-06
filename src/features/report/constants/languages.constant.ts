@@ -1,4 +1,4 @@
-export const MAX_VISIBLE = 7 // el color 8 queda para "Otros"
+export const MAX_VISIBLE = 5 // el resto se agrupa en "Otros", que usa el color 8
 
 // Colores de GitHub por lenguaje, aclarados donde hace falta para verse sobre fondo oscuro.
 // Los lenguajes que no estén aquí caen a la paleta de gráficas.

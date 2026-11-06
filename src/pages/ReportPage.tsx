@@ -28,12 +28,7 @@ export default function ReportPage() {
 
   return (
     <div className="py-10">
-      <Reveal className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm text-muted">Reporte de</p>
-          <h1 className="font-mono text-2xl font-medium tracking-tight sm:text-3xl">{data.repo}</h1>
-          {data.description && <p className="mt-1 text-muted">{data.description}</p>}
-        </div>
+      <Reveal className="flex justify-end">
         <div className="flex gap-2">
           <Button variant="outline" onClick={exportPng} disabled={exporting}>Descargar PNG</Button>
           <Button variant="ghost" onClick={() => exportReadme(data, ai)}>Exportar README</Button>
