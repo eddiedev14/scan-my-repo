@@ -1,13 +1,17 @@
 import { useNavigate } from 'react-router-dom'
 import { SearchBar } from '@/features/search'
-import { HistoryPanel } from '@/features/history'
+import { HistoryPanel, useHistory } from '@/features/history'
 import { Card } from '@/shared/components/Card'
 import { Reveal } from '@/shared/components/Reveal'
-import { EXAMPLES, FEATURES, SAMPLE_HISTORY } from '@/shared/constants/HomePage.constant'
+import { EXAMPLES, FEATURES } from '@/shared/constants/HomePage.constant'
+import type { HistoryEntry } from '@/shared/types'
 
 export default function HomePage() {
   const navigate = useNavigate()
   const goToReport = (repo: string) => navigate(`/report/${repo}`)
+  const { entries, clear } = useHistory()
+  // Solo viaja el id: ReportPage busca la entrada guardada y no consulta GitHub ni la IA
+  const openEntry = (entry: HistoryEntry) => navigate(`/report/${entry.repo}`, { state: { historyId: entry.id } })
 
   return (
     <>
@@ -67,7 +71,7 @@ export default function HomePage() {
       </section>
 
       <section id="history" className="scroll-mt-16 py-12">
-        <HistoryPanel entries={SAMPLE_HISTORY} onSelect={(e) => goToReport(e.repo)} />
+        <HistoryPanel entries={entries} onSelect={openEntry} onClear={clear} />
       </section>
 
       <Reveal>
