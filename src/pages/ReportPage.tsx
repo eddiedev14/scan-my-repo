@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { AiSummary, useAiSummary } from '@/features/ai-summary'
 import { useExportReport, useReadmeExport } from '@/features/export'
 import { useHistory } from '@/features/history'
@@ -19,7 +19,13 @@ import type { AiResult, AppError, Report } from '@/shared/types'
 
 export default function ReportPage() {
   const { owner, repo } = useParams()
-  const { add } = useHistory()
+  const state = useLocation().state as { historyId?: string } | null
+  const { entries, add } = useHistory()
+
+  // Abierto desde el historial: se muestra lo guardado, sin consultar GitHub ni la IA
+  const saved = entries.find((e) => e.id === state?.historyId)
+  if (saved) return <ReportView report={saved.data} ai={saved.ia} errorAi={null} saved />
+
   return <LiveReport repo={`${owner}/${repo}`} onDone={add} />
 }
 
@@ -63,10 +69,11 @@ interface ViewProps {
   report: Report
   ai: AiResult | null
   errorAi: AppError | null
+  saved?: boolean
 }
 
 // El reporte ya cargado, con sus botones de exportar
-function ReportView({ report, ai, errorAi }: ViewProps) {
+function ReportView({ report, ai, errorAi, saved = false }: ViewProps) {
   const { ref, exportPng, exporting } = useExportReport()
   const { exportReadme } = useReadmeExport()
 
@@ -103,7 +110,11 @@ function ReportView({ report, ai, errorAi }: ViewProps) {
               <IssuesCard issues={report.issues} />
             </div>
 
-            {errorAi || !ai ? (
+            {saved && !ai ? (
+              <Card>
+                <p className="text-sm text-muted">Este análisis se guardó sin resumen de IA.</p>
+              </Card>
+            ) : errorAi || !ai ? (
               <Card className="mt-12 text-center">
                 <p className="text-danger">{errorAi?.message ?? 'No pudimos cargar el resumen con AI.'}</p>
                 <Link to="/" className="mt-3 inline-block text-sm text-accent-2 underline">
