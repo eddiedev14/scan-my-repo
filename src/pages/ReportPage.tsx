@@ -1,6 +1,8 @@
+import { useEffect, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { AiSummary, useAiSummary } from '@/features/ai-summary'
 import { useExportReport, useReadmeExport } from '@/features/export'
+import { useHistory } from '@/features/history'
 import {
   CommitsChart,
   ContributorsList,
@@ -17,13 +19,22 @@ import type { AiResult, AppError, Report } from '@/shared/types'
 
 export default function ReportPage() {
   const { owner, repo } = useParams()
-  return <LiveReport repo={`${owner}/${repo}`} />
+  const { add } = useHistory()
+  return <LiveReport repo={`${owner}/${repo}`} onDone={add} />
 }
 
 // Análisis en vivo: consulta GitHub y la IA, y muestra el spinner o el error mientras tanto
-function LiveReport({ repo }: { repo: string }) {
+function LiveReport({ repo, onDone }: { repo: string; onDone: (data: Report, ia: AiResult | null) => void }) {
   const { data: report, loading: loadingData, error: errorData } = useRepoReport(repo)
   const { data: ai, loading: loadingAi, error: errorAi } = useAiSummary(report)
+  const savedReport = useRef<Report | null>(null)
+
+  // Guarda una sola vez por análisis, cuando la IA ya terminó (con resultado, con error o sin consultarla)
+  useEffect(() => {
+    if (!report || loadingAi || savedReport.current === report) return
+    savedReport.current = report
+    onDone(report, ai)
+  }, [report, ai, loadingAi, onDone])
 
   // Calculated values
   const loading = loadingData || loadingAi
