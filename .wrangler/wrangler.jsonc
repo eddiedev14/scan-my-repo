@@ -1,0 +1,6 @@
+{
+  "name": "scan-my-repo-api",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-11-01",
+  "vars": { "GROQ_MODEL": "openai/gpt-oss-120b" }, // Variables públicas (no secretas)
+}
