@@ -18,7 +18,7 @@ function Logo({ className = '' }: { className?: string }) {
   )
 }
 
-const navClass = ({ isActive }: { isActive: boolean }) =>
+const navClass = (isActive: boolean) =>
   `rounded-button px-3 py-2 text-sm transition duration-200 ${isActive ? 'bg-surface-2 text-text' : 'text-muted hover:text-text'}`
 
 export default function App() {
@@ -48,10 +48,10 @@ export default function App() {
             <Logo />
           </Link>
           <nav className="flex gap-2" aria-label="Principal">
-            <NavLink to="/" end className={navClass}>
+            <NavLink to="/#hero" className={() => navClass(pathname === '/' && hash !== '#history')}>
               Inicio
             </NavLink>
-            <NavLink to="/#history" className={navClass}>
+            <NavLink to="/#history" className={() => navClass(pathname === '/' && hash === '#history')}>
               Historial
             </NavLink>
           </nav>

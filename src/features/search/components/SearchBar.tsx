@@ -25,7 +25,7 @@ export function SearchBar({ onSearch, disabled = false }: Props) {
           className="font-mono text-base sm:py-4 sm:text-lg"
         />
       </div>
-      <Button type="submit" disabled={disabled} className="sm:py-4 sm:text-base sm:px-7">
+      <Button type="submit" disabled={disabled} className="cursor-pointer sm:py-4 sm:text-base sm:px-7">
         Escanear
       </Button>
     </form>

@@ -2,7 +2,7 @@ import { mockAiResult } from '../mocks/aiResult.mock'
 import { mockReport, mockReportEmpty } from '../mocks/report.mock'
 import { HistoryEntry } from '../types'
 
-const EXAMPLES = ['eddiedev14/linknest']
+const EXAMPLES = ['eddiedev14/linknest', 'SIGEU-UAO/SIGEU']
 
 const FEATURES = [
   { title: 'Lenguajes', text: 'Qué tecnologías usa el proyecto y en qué proporción, de un vistazo.' },

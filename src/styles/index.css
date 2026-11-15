@@ -42,6 +42,7 @@
 @layer base {
   html {
     color-scheme: dark;
+    scroll-behavior: smooth;
   }
   body {
     margin: 0;
@@ -62,6 +63,9 @@
     outline-offset: 2px;
   }
   @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
     *,
     *::before,
     *::after {
