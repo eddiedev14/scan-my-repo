@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { AiResult, AppError, Report } from '@/shared/types'
-import { getAiSummary } from '../actions/summarize'
+import { getAiSummary } from '@/features/ai-summary/actions/summarize'
 
 interface Result {
   repo: string

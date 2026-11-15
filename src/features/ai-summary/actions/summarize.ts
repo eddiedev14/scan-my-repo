@@ -1,6 +1,6 @@
 import { AiResult, Report } from '@/shared/types'
-import { summarizeApi } from '../api/summarize'
-import { buildSummaryPayload } from '../utils/buildSummaryPayload'
+import { summarizeApi } from '@/features/ai-summary/api/summarize'
+import { buildSummaryPayload } from '@/features/ai-summary/utils/buildSummaryPayload'
 
 // Lo que responde el Worker
 interface SummarizeResponse {
