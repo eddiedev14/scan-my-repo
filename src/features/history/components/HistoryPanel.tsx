@@ -41,8 +41,11 @@ export function HistoryPanel({ entries, onSelect, onClear }: Props) {
                       {e.repo}
                     </span>
                     <span className="mt-0.5 block font-mono text-xs text-muted">
-                      {formatDateTime(e.date)} · <span aria-hidden="true">★</span> {formatNumber(e.data.stars)}
-                      <span className="sr-only"> estrellas</span>
+                      {formatDateTime(e.date)} ·{' '}
+                      <span className="whitespace-nowrap">
+                        <span aria-hidden="true">★</span> {formatNumber(e.data.stars)}
+                        <span className="sr-only"> estrellas</span>
+                      </span>
                     </span>
                   </span>
                   {e.ia ? (
