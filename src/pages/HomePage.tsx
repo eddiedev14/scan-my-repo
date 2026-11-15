@@ -66,7 +66,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-12">
+      <section id="history" className="scroll-mt-16 py-12">
         <HistoryPanel entries={SAMPLE_HISTORY} onSelect={(e) => goToReport(e.repo)} />
       </section>
 
