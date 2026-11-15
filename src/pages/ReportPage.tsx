@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { AiSummary, useAiSummary } from '@/features/ai-summary'
 import { useExportReport, useReadmeExport } from '@/features/export'
@@ -14,13 +13,17 @@ import { Button } from '@/shared/components/Button'
 import { Card } from '@/shared/components/Card'
 import { Reveal } from '@/shared/components/Reveal'
 import { Spinner } from '@/shared/components/Spinner'
+import type { AiResult, AppError, Report } from '@/shared/types'
 
 export default function ReportPage() {
   const { owner, repo } = useParams()
-  const { data: report, loading: loadingData, error: errorData } = useRepoReport(`${owner}/${repo}`)
+  return <LiveReport repo={`${owner}/${repo}`} />
+}
+
+// Análisis en vivo: consulta GitHub y la IA, y muestra el spinner o el error mientras tanto
+function LiveReport({ repo }: { repo: string }) {
+  const { data: report, loading: loadingData, error: errorData } = useRepoReport(repo)
   const { data: ai, loading: loadingAi, error: errorAi } = useAiSummary(report)
-  const { ref, exportPng, exporting } = useExportReport()
-  const { exportReadme } = useReadmeExport()
 
   // Calculated values
   const loading = loadingData || loadingAi
@@ -41,6 +44,20 @@ export default function ReportPage() {
       </Card>
     )
   }
+
+  return <ReportView report={report} ai={ai} errorAi={errorAi} />
+}
+
+interface ViewProps {
+  report: Report
+  ai: AiResult | null
+  errorAi: AppError | null
+}
+
+// El reporte ya cargado, con sus botones de exportar
+function ReportView({ report, ai, errorAi }: ViewProps) {
+  const { ref, exportPng, exporting } = useExportReport()
+  const { exportReadme } = useReadmeExport()
 
   return (
     <div className="py-10">
