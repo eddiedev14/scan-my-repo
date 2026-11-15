@@ -32,7 +32,7 @@ export interface AiResult {
 export interface HistoryEntry {
   id: string
   repo: string
-  date: string
+  date: string // ISO completo con hora (toISOString), no "AAAA-MM-DD"
   data: Report
   ia: AiResult | null
 }
