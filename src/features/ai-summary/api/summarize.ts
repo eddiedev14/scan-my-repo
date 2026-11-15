@@ -1,7 +1,7 @@
 import axios, { isAxiosError } from 'axios'
 import type { AppError } from '@/shared/types'
 
-export const summarizeApi = axios.create({ timeout: 4000 })
+export const summarizeApi = axios.create({ timeout: 40000 })
 
 const DEFAULT_MESSAGE = 'No pudimos generar el resumen con AI'
 
