@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { mockAiResult } from '@/shared/mocks/aiResult.mock'
 import type { AiResult, AppError, Report } from '@/shared/types'
 import { getAiSummary } from '../actions/summarize'
 
