@@ -1,0 +1,7 @@
+{
+  "name": "scan-my-repo-api",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-11-01",
+  // Variables públicas (no secretas). GROQ_API_KEY va en .dev.vars (local) o en secrets (producción)
+  "vars": { "GROQ_MODEL": "openai/gpt-oss-120b" }
+}

@@ -5,3 +5,7 @@ dist/
 *.local
 *.log
 .DS_Store
+
+# Cloudflare Workers
+.dev.vars
+.wrangler

@@ -11,7 +11,7 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="flex flex-col items-center gap-6 pb-16 pt-14 text-center sm:pt-24">
+      <section id="hero" className="flex scroll-mt-16 flex-col items-center gap-6 pb-16 pt-14 text-center sm:pt-24">
         <Reveal className="max-w-3xl">
           <h1 className="text-4xl font-bold leading-[1.1] tracking-[-0.035em] sm:text-6xl">
             <span className="rounded-full bg-accent px-4 text-bg sm:px-6">Escanea</span> cualquier repositorio de GitHub
@@ -31,7 +31,7 @@ export default function HomePage() {
             <button
               key={repo}
               onClick={() => goToReport(repo)}
-              className="rounded-full border border-border bg-surface px-3 py-1 font-mono text-text transition duration-200 hover:border-accent hover:text-accent"
+              className="rounded-full cursor-pointer border border-border bg-surface px-3 py-1 font-mono text-text transition duration-200 hover:border-accent hover:text-accent"
             >
               {repo}
             </button>
@@ -66,7 +66,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-12">
+      <section id="history" className="scroll-mt-16 py-12">
         <HistoryPanel entries={SAMPLE_HISTORY} onSelect={(e) => goToReport(e.repo)} />
       </section>
 
