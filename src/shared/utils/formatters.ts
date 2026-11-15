@@ -5,6 +5,15 @@ const percentFmt = new Intl.NumberFormat('es', { style: 'percent', minimumFracti
 const dateFmt = new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
 const monthFmt = new Intl.DateTimeFormat('es', { month: 'short', timeZone: 'UTC' })
 const monthYearFmt = new Intl.DateTimeFormat('es', { month: 'short', year: 'numeric', timeZone: 'UTC' })
+// Sin timeZone: la hora sale en la zona del usuario, en formato de 24 h
+const dateTimeFmt = new Intl.DateTimeFormat('es', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
+})
 
 // "AAAA-MM-DD" se lee como medianoche UTC para que la zona horaria no corra el día
 const toUtcDate = (iso: string) => new Date(`${iso}T00:00:00Z`)
@@ -17,6 +26,9 @@ export const formatPercent = (n: number) => percentFmt.format(n / 100)
 
 // "2026-10-28" -> "28 oct 2026"
 export const formatDate = (iso: string) => dateFmt.format(toUtcDate(iso)).replace('.', '')
+
+// "2026-11-15T17:04:00.000Z" -> "15 nov 2026, 12:04" (en Colombia)
+export const formatDateTime = (iso: string) => dateTimeFmt.format(new Date(iso)).replace('.', '')
 
 // "2026-08-10" -> "ago", o "ago 2026" con año
 export const formatMonth = (iso: string, withYear = false) =>

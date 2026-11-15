@@ -33,10 +33,12 @@ improvements: string[]     2 a 5
 ```
 
 ## HistoryEntry
+Se guarda en localStorage (`scanmyrepo:history`): máximo 20, la más reciente primero y cada repo una sola vez (sin distinguir mayúsculas). `data.readme` se recorta a 100 000 caracteres.
 ```
 id: string                 crypto.randomUUID()
 repo: string
-date: date
+date: string               ISO completo con hora, "2026-11-15T19:06:09.580Z" (excepción: es el momento del análisis)
+                           se muestra con formatDateTime; formatDate y timeAgo esperan "AAAA-MM-DD" y no sirven
 data: Report
 ia: AiResult|null
 ```
@@ -59,8 +61,8 @@ Typos evidentes que se corrigieron para que los tres equipos usen los mismos nom
 | Pieza | Firma |
 |-------|-------|
 | `useRepoReport(repo)` | `{ data: Report \| null, loading: boolean, error: AppError \| null }` |
-| `useAiSummary(report)` | `{ data: AiResult \| null, loading, error }` (no exportado por el barrel) |
-| `useHistory()` | `{ entries, add(data, ia), remove(id), clear() }` (no exportado por el barrel) |
+| `useAiSummary(report)` | `{ data: AiResult \| null, loading, error }` |
+| `useHistory()` | `{ entries, add(data, ia) → HistoryEntry, remove(id), clear() }` |
 | `useExportReport()` | `{ ref, exporting, exportPng() }` |
 | `useReadmeExport()` | `{ exportReadme(report, ia) }` |
 | `SearchBar` | `{ onSearch(repo: "usuario/repo") }` |
@@ -71,4 +73,4 @@ Typos evidentes que se corrigieron para que los tres equipos usen los mismos nom
 | `IssuesCard` | `{ issues }` |
 | `AiSummary` | `{ result: AiResult }` |
 | `ScoreMeter` | `{ score }` |
-| `HistoryPanel` | `{ entries: HistoryEntry[], onSelect(entry) }` |
+| `HistoryPanel` | `{ entries: HistoryEntry[], onSelect(entry), onClear() }` |

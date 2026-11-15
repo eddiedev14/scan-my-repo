@@ -1,7 +1,8 @@
-import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { AiSummary, useAiSummary } from '@/features/ai-summary'
 import { useExportReport, useReadmeExport } from '@/features/export'
+import { useHistory } from '@/features/history'
 import {
   CommitsChart,
   ContributorsList,
@@ -14,13 +15,32 @@ import { Button } from '@/shared/components/Button'
 import { Card } from '@/shared/components/Card'
 import { Reveal } from '@/shared/components/Reveal'
 import { Spinner } from '@/shared/components/Spinner'
+import type { AiResult, AppError, Report } from '@/shared/types'
 
 export default function ReportPage() {
   const { owner, repo } = useParams()
-  const { data: report, loading: loadingData, error: errorData } = useRepoReport(`${owner}/${repo}`)
+  const state = useLocation().state as { historyId?: string } | null
+  const { entries, add } = useHistory()
+
+  // Abierto desde el historial: se muestra lo guardado, sin consultar GitHub ni la IA
+  const saved = entries.find((e) => e.id === state?.historyId)
+  if (saved) return <ReportView report={saved.data} ai={saved.ia} errorAi={null} saved />
+
+  return <LiveReport repo={`${owner}/${repo}`} onDone={add} />
+}
+
+// Análisis en vivo: consulta GitHub y la IA, y muestra el spinner o el error mientras tanto
+function LiveReport({ repo, onDone }: { repo: string; onDone: (data: Report, ia: AiResult | null) => void }) {
+  const { data: report, loading: loadingData, error: errorData } = useRepoReport(repo)
   const { data: ai, loading: loadingAi, error: errorAi } = useAiSummary(report)
-  const { ref, exportPng, exporting } = useExportReport()
-  const { exportReadme } = useReadmeExport()
+  const savedReport = useRef<Report | null>(null)
+
+  // Guarda una sola vez por análisis, cuando la IA ya terminó (con resultado, con error o sin consultarla)
+  useEffect(() => {
+    if (!report || loadingAi || savedReport.current === report) return
+    savedReport.current = report
+    onDone(report, ai)
+  }, [report, ai, loadingAi, onDone])
 
   // Calculated values
   const loading = loadingData || loadingAi
@@ -41,6 +61,21 @@ export default function ReportPage() {
       </Card>
     )
   }
+
+  return <ReportView report={report} ai={ai} errorAi={errorAi} />
+}
+
+interface ViewProps {
+  report: Report
+  ai: AiResult | null
+  errorAi: AppError | null
+  saved?: boolean
+}
+
+// El reporte ya cargado, con sus botones de exportar
+function ReportView({ report, ai, errorAi, saved = false }: ViewProps) {
+  const { ref, exportPng, exporting } = useExportReport()
+  const { exportReadme } = useReadmeExport()
 
   return (
     <div className="py-10">
@@ -75,7 +110,11 @@ export default function ReportPage() {
               <IssuesCard issues={report.issues} />
             </div>
 
-            {errorAi || !ai ? (
+            {saved && !ai ? (
+              <Card>
+                <p className="text-sm text-muted">Este análisis se guardó sin resumen de IA.</p>
+              </Card>
+            ) : errorAi || !ai ? (
               <Card className="mt-12 text-center">
                 <p className="text-danger">{errorAi?.message ?? 'No pudimos cargar el resumen con AI.'}</p>
                 <Link to="/" className="mt-3 inline-block text-sm text-accent-2 underline">

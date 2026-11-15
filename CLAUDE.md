@@ -29,7 +29,7 @@ docs/         CONTRATOS.md (datos y firmas), DESIGN.md (referencia de estilo Not
 - Las pages importan solo desde el `index.ts` de cada feature (barrel).
 - `shared` no importa nada de `features` ni de `pages`.
 - Todo componente recibe sus datos por props.
-- Cada `index.ts` exporta solo lo acordado: search → `SearchBar`; report → `StatsCards`, `LanguagesChart`, `CommitsChart`, `ContributorsList`, `IssuesCard`, `useRepoReport`; ai-summary → `AiSummary`, `ScoreMeter`; history → `HistoryPanel`; export → `useExportReport`, `useReadmeExport`.
+- Cada `index.ts` exporta solo lo acordado: search → `SearchBar`; report → `StatsCards`, `LanguagesChart`, `CommitsChart`, `ContributorsList`, `IssuesCard`, `useRepoReport`; ai-summary → `AiSummary`, `ScoreMeter`, `useAiSummary`; history → `HistoryPanel`, `useHistory`; export → `useExportReport`, `useReadmeExport`.
 
 ## Contratos
 La fuente de verdad es `docs/CONTRATOS.md`; los tipos están en `src/shared/types.ts` (`Report`, `AiResult`, `HistoryEntry`, `AppError`). Campos en inglés. Fechas como string ISO `"AAAA-MM-DD"`. Todos los servicios y hooks rechazan con `AppError` (mensaje en español listo para mostrar). Respeta nombres y firmas: otras personas trabajan cada feature por separado.
@@ -54,6 +54,6 @@ React Router DOM (`BrowserRouter` en `main.tsx`). Rutas en `App.tsx`: `/` y `/re
 
 ## Cosas a tener en cuenta
 - `.env.example`: `GROQ_API_KEY` y `GROQ_MODEL`. `vite.config.js` usa `envPrefix: ['VITE_', 'GROQ_']`, así que la clave queda en el bundle del navegador; resolverlo antes de publicar. El modelo `grok-4.7` conviene verificarlo.
-- Los barrels de `ai-summary` y `history` no exportan hooks, así que `ReportPage` usa `mockAiResult` y `HomePage` un historial de ejemplo. Al implementarlos hay que ampliar el barrel o ajustar la regla.
+- Historial: se guarda en localStorage (`scanmyrepo:history`, máximo 20, sin repos repetidos). Un reporte abierto desde el historial viaja con `state: { historyId }` y no consulta GitHub ni la IA. Con URL directa u otra pestaña se hace un análisis nuevo.
 - Exportar a PNG: las cards que aún no se vieron con el scroll tienen `opacity: 0` (`.reveal`). `useExportReport` debe forzarlas visibles antes de capturar.
 - No hay framework de tests ni ESLint.
