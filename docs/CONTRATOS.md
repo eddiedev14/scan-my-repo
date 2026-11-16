@@ -63,8 +63,8 @@ Typos evidentes que se corrigieron para que los tres equipos usen los mismos nom
 | `useRepoReport(repo)` | `{ data: Report \| null, loading: boolean, error: AppError \| null }` |
 | `useAiSummary(report)` | `{ data: AiResult \| null, loading, error }` |
 | `useHistory()` | `{ entries, add(data, ia) → HistoryEntry, remove(id), clear() }` |
-| `useExportReport()` | `{ ref, exporting, exportPng() }` |
-| `useReadmeExport()` | `{ exportReadme(report, ia) }` |
+| `ExportReportButton` | `{ targetId: string, fileName: string, disabled?: boolean }` (descarga `{fileName}.png`) |
+| `ExportReadmeButton` | `{ readme: string \| null, fileName: string, disabled?: boolean }` (descarga `{fileName}.md`) |
 | `SearchBar` | `{ onSearch(repo: "usuario/repo") }` |
 | `StatsCards` | `{ report }` |
 | `LanguagesChart` | `{ languages }` |

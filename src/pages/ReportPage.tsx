@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { AiSummary, useAiSummary } from '@/features/ai-summary'
-import { useExportReport, useReadmeExport } from '@/features/export'
+import { ExportReadmeButton, ExportReportButton } from '@/features/export'
 import { useHistory } from '@/features/history'
+
 import {
   CommitsChart,
   ContributorsList,
@@ -11,7 +12,6 @@ import {
   StatsCards,
   useRepoReport,
 } from '@/features/report'
-import { Button } from '@/shared/components/Button'
 import { Card } from '@/shared/components/Card'
 import { Reveal } from '@/shared/components/Reveal'
 import { Spinner } from '@/shared/components/Spinner'
@@ -74,23 +74,16 @@ interface ViewProps {
 
 // El reporte ya cargado, con sus botones de exportar
 function ReportView({ report, ai, errorAi, saved = false }: ViewProps) {
-  const { ref, exportPng, exporting } = useExportReport()
-  const { exportReadme } = useReadmeExport()
-
   return (
     <div className="py-10">
       <Reveal className="flex justify-end">
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={exportPng} disabled={exporting}>
-            Descargar PNG
-          </Button>
-          <Button variant="ghost" onClick={() => exportReadme(report, ai)}>
-            Exportar README
-          </Button>
+        <div className="flex items-start gap-2">
+          <ExportReportButton targetId="report-capture" fileName={`${report.name}-reporte`} />
+          <ExportReadmeButton readme={report.readme} fileName={`${report.name}-README`} />
         </div>
       </Reveal>
 
-      <div ref={ref} className="mt-8 flex flex-col gap-4 bg-bg">
+      <div id="report-capture" className="mt-8 flex flex-col gap-4 bg-bg">
         <StatsCards report={report} />
         {report.isEmptyRepo ? (
           <Card>
@@ -117,7 +110,7 @@ function ReportView({ report, ai, errorAi, saved = false }: ViewProps) {
             ) : errorAi || !ai ? (
               <Card className="mt-12 text-center">
                 <p className="text-danger">{errorAi?.message ?? 'No pudimos cargar el resumen con AI.'}</p>
-                <Link to="/" className="mt-3 inline-block text-sm text-accent-2 underline">
+                <Link to="/" data-export-ignore className="mt-3 inline-block text-sm text-accent-2 underline">
                   Volver al inicio
                 </Link>
               </Card>
