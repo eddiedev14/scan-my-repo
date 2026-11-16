@@ -1,8 +1,18 @@
 // Contratos de docs/CONTRATOS.md. Fechas como string ISO ("AAAA-MM-DD") para que sean serializables; HistoryEntry.date es ISO completo con hora.
 
-export interface Language { name: string; percent: number }
-export interface Contributor { user: string; avatar: string; commits: number }
-export interface WeeklyCommits { week: string; commits: number }
+export interface Language {
+  name: string
+  percent: number
+}
+export interface Contributor {
+  user: string
+  avatar: string
+  commits: number
+}
+export interface WeeklyCommits {
+  week: string
+  commits: number
+}
 
 export interface Report {
   repo: string

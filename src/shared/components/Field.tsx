@@ -24,7 +24,11 @@ export function Field({ label, hideLabel, hint, error, className = '', ...props 
         {...props}
       />
       {note && (
-        <p id={`${id}-note`} role={error ? 'alert' : undefined} className={`text-sm ${error ? 'text-danger' : 'text-muted'}`}>
+        <p
+          id={`${id}-note`}
+          role={error ? 'alert' : undefined}
+          className={`text-sm ${error ? 'text-danger' : 'text-muted'}`}
+        >
           {note}
         </p>
       )}

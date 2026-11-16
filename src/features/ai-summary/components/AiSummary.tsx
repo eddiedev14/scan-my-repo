@@ -9,7 +9,9 @@ function List({ title, items, mark, color }: { title: string; items: string[]; m
       <ul className="mt-2 flex flex-col gap-2 text-sm">
         {items.map((t) => (
           <li key={t} className="flex gap-2">
-            <span aria-hidden className={`font-mono ${color}`}>{mark}</span>
+            <span aria-hidden className={`font-mono ${color}`}>
+              {mark}
+            </span>
             <span>{t}</span>
           </li>
         ))}
