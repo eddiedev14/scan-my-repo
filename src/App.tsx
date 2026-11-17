@@ -6,7 +6,6 @@ import HomePage from '@/pages/HomePage'
 import ReportPage from '@/pages/ReportPage'
 
 const LOADER_MS = 2000
-const SAMPLE_REPORT = '/report/eddiedev14/linknest'
 
 function Logo({ className = '' }: { className?: string }) {
   return (
@@ -19,11 +18,11 @@ function Logo({ className = '' }: { className?: string }) {
   )
 }
 
-const navClass = ({ isActive }: { isActive: boolean }) =>
+const navClass = (isActive: boolean) =>
   `rounded-button px-3 py-2 text-sm transition duration-200 ${isActive ? 'bg-surface-2 text-text' : 'text-muted hover:text-text'}`
 
 export default function App() {
-  const { pathname } = useLocation()
+  const { pathname, hash, key } = useLocation()
   // Hay loader mientras la ruta mostrada no alcanza a la actual (no aplica a la carga inicial)
   const [shownPath, setShownPath] = useState(pathname)
   const loading = shownPath !== pathname
@@ -34,6 +33,13 @@ export default function App() {
     return () => clearTimeout(t)
   }, [loading, pathname])
 
+  // React Router no hace scroll al hash. Se espera a que termine el loader (la página ya está montada)
+  // y `key` cambia en cada navegación, así que volver a pulsar el mismo enlace también hace scroll
+  useEffect(() => {
+    if (loading || !hash) return
+    document.getElementById(hash.slice(1))?.scrollIntoView()
+  }, [loading, hash, key])
+
   return (
     <>
       <header className="sticky top-0 z-10 border-b border-border bg-bg/90 backdrop-blur">
@@ -41,12 +47,12 @@ export default function App() {
           <Link to="/" aria-label="Scan my Repo, inicio">
             <Logo />
           </Link>
-          <nav className="flex gap-1" aria-label="Principal">
-            <NavLink to="/" end className={navClass}>
+          <nav className="flex gap-2" aria-label="Principal">
+            <NavLink to="/#hero" className={() => navClass(pathname === '/' && hash !== '#history')}>
               Inicio
             </NavLink>
-            <NavLink to={SAMPLE_REPORT} className={navClass}>
-              Reporte
+            <NavLink to="/#history" className={() => navClass(pathname === '/' && hash === '#history')}>
+              Historial
             </NavLink>
           </nav>
         </div>

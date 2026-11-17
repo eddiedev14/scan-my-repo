@@ -75,7 +75,14 @@ export const mockReportEmpty: Report = {
 export const mockReportManyLanguages: Report = {
   ...mockReport,
   languages: [
-    ['TypeScript', 40], ['JavaScript', 20], ['CSS', 12], ['HTML', 8], ['Python', 6],
-    ['Shell', 5], ['Dockerfile', 4], ['Makefile', 3], ['Lua', 2],
+    ['TypeScript', 40],
+    ['JavaScript', 20],
+    ['CSS', 12],
+    ['HTML', 8],
+    ['Python', 6],
+    ['Shell', 5],
+    ['Dockerfile', 4],
+    ['Makefile', 3],
+    ['Lua', 2],
   ].map(([name, percent]) => ({ name: name as string, percent: percent as number })),
 }

@@ -2,7 +2,7 @@
 
 Web donde se pega `usuario/repo` o la URL de un repositorio público de GitHub y se muestra un reporte visual (lenguajes, commits por semana, contribuidores, issues) con un resumen hecho por IA y una calificación de 1 a 5. Proyecto Informático · UAO · 2026.
 
-**Estado:** solo la base. Todo muestra datos de `src/shared/mocks`. Aún no hay llamadas reales a GitHub ni a Groq, gráficas con recharts, historial persistente ni exportación. Cada pieza pendiente está marcada con `TODO` en su archivo stub.
+**Estado:** HU-01 a HU-05 en `develop`: datos reales de GitHub, gráficas con recharts, resumen y calificación con Groq a través del Worker (`/api/summarize`) e historial en localStorage. Pendiente: HU-06 exportar (`useExportReport` y `useReadmeExport` siguen como stub, marcados con `TODO`).
 
 ## Comandos
 - `npm run dev`: servidor de desarrollo (http://localhost:5173)
@@ -29,10 +29,10 @@ docs/         CONTRATOS.md (datos y firmas), DESIGN.md (referencia de estilo Not
 - Las pages importan solo desde el `index.ts` de cada feature (barrel).
 - `shared` no importa nada de `features` ni de `pages`.
 - Todo componente recibe sus datos por props.
-- Cada `index.ts` exporta solo lo acordado: search → `SearchBar`; report → `StatsCards`, `LanguagesChart`, `CommitsChart`, `ContributorsList`, `IssuesCard`, `useRepoReport`; ai-summary → `AiSummary`, `ScoreMeter`; history → `HistoryPanel`; export → `useExportReport`, `useReadmeExport`.
+- Cada `index.ts` exporta solo lo acordado: search → `SearchBar`; report → `StatsCards`, `LanguagesChart`, `CommitsChart`, `ContributorsList`, `IssuesCard`, `useRepoReport`; ai-summary → `AiSummary`, `ScoreMeter`, `useAiSummary`; history → `HistoryPanel`, `useHistory`; export → `useExportReport`, `useReadmeExport`.
 
 ## Contratos
-La fuente de verdad es `docs/CONTRATOS.md`; los tipos están en `src/shared/types.ts` (`Report`, `AiResult`, `HistoryEntry`, `AppError`). Campos en inglés. Fechas como string ISO `"AAAA-MM-DD"`. Todos los servicios y hooks rechazan con `AppError` (mensaje en español listo para mostrar). Respeta nombres y firmas: otras personas trabajan cada feature por separado.
+La fuente de verdad es `docs/CONTRATOS.md`; los tipos están en `src/shared/types.ts` (`Report`, `AiResult`, `HistoryEntry`, `AppError`). Campos en inglés. Fechas como string ISO `"AAAA-MM-DD"` (excepción: `HistoryEntry.date` es ISO completo con hora). Todos los servicios y hooks rechazan con `AppError` (mensaje en español listo para mostrar). Respeta nombres y firmas: otras personas trabajan cada feature por separado.
 
 ## Navegación
 React Router DOM (`BrowserRouter` en `main.tsx`). Rutas en `App.tsx`: `/` y `/report/:owner/:repo`. Cada cambio de ruta muestra un loader de 2 s (spinner + logo). La carga inicial no lo muestra.
@@ -50,10 +50,10 @@ React Router DOM (`BrowserRouter` en `main.tsx`). Rutas en `App.tsx`: `/` y `/re
 ## Convenciones de código
 - Comentarios breves en español, solo donde aporten.
 - Sin punto y coma, comillas simples.
-- Mocks de prueba: `/report/eddiedev14/sigeu` (normal), `/report/demo/muchos-lenguajes` (9 lenguajes), `/report/demo/repo-vacio` (sin commits).
+- Mocks: `src/shared/mocks` (`report.mock.ts`, `aiResult.mock.ts`) ya no los usa ninguna ruta; todo reporte consulta GitHub de verdad. Sirven como datos de ejemplo para pruebas manuales.
 
 ## Cosas a tener en cuenta
-- `.env.example`: `GROQ_API_KEY` y `GROQ_MODEL`. `vite.config.js` usa `envPrefix: ['VITE_', 'GROQ_']`, así que la clave queda en el bundle del navegador; resolverlo antes de publicar. El modelo `grok-4.7` conviene verificarlo.
-- Los barrels de `ai-summary` y `history` no exportan hooks, así que `ReportPage` usa `mockAiResult` y `HomePage` un historial de ejemplo. Al implementarlos hay que ampliar el barrel o ajustar la regla.
+- IA: la clave `GROQ_API_KEY` va en `.dev.vars` (local, en `.gitignore`) o como secret de Cloudflare, y solo la lee el Worker; nunca con prefijo `VITE_`. El modelo está en `wrangler.jsonc` → `vars.GROQ_MODEL` (`openai/gpt-oss-120b`). En desarrollo Vite hace proxy de `/api` a `http://localhost:8787`.
+- Historial: se guarda en localStorage (`scanmyrepo:history`, máximo 20, sin repos repetidos). Un reporte abierto desde el historial viaja con `state: { historyId }` y no consulta GitHub ni la IA. Con URL directa u otra pestaña se hace un análisis nuevo.
 - Exportar a PNG: las cards que aún no se vieron con el scroll tienen `opacity: 0` (`.reveal`). `useExportReport` debe forzarlas visibles antes de capturar.
 - No hay framework de tests ni ESLint.

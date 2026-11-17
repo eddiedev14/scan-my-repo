@@ -1,8 +1,4 @@
-import { mockAiResult } from '../mocks/aiResult.mock'
-import { mockReport, mockReportEmpty } from '../mocks/report.mock'
-import { HistoryEntry } from '../types'
-
-const EXAMPLES = ['eddiedev14/linknest']
+const EXAMPLES = ['eddiedev14/linknest', 'SIGEU-UAO/SIGEU']
 
 const FEATURES = [
   { title: 'Lenguajes', text: 'Qué tecnologías usa el proyecto y en qué proporción, de un vistazo.' },
@@ -17,10 +13,4 @@ const FEATURES = [
   },
 ]
 
-// Datos de ejemplo hasta que el historial sea real
-const SAMPLE_HISTORY: HistoryEntry[] = [
-  { id: crypto.randomUUID(), repo: mockReport.repo, date: '2026-10-28', data: mockReport, ia: mockAiResult },
-  { id: crypto.randomUUID(), repo: mockReportEmpty.repo, date: '2026-10-30', data: mockReportEmpty, ia: null },
-]
-
-export { EXAMPLES, FEATURES, SAMPLE_HISTORY }
+export { EXAMPLES, FEATURES }

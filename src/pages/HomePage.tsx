@@ -1,17 +1,21 @@
 import { useNavigate } from 'react-router-dom'
 import { SearchBar } from '@/features/search'
-import { HistoryPanel } from '@/features/history'
+import { HistoryPanel, useHistory } from '@/features/history'
 import { Card } from '@/shared/components/Card'
 import { Reveal } from '@/shared/components/Reveal'
-import { EXAMPLES, FEATURES, SAMPLE_HISTORY } from '@/shared/constants/HomePage.constant'
+import { EXAMPLES, FEATURES } from '@/shared/constants/HomePage.constant'
+import type { HistoryEntry } from '@/shared/types'
 
 export default function HomePage() {
   const navigate = useNavigate()
   const goToReport = (repo: string) => navigate(`/report/${repo}`)
+  const { entries, clear } = useHistory()
+  // Solo viaja el id: ReportPage busca la entrada guardada y no consulta GitHub ni la IA
+  const openEntry = (entry: HistoryEntry) => navigate(`/report/${entry.repo}`, { state: { historyId: entry.id } })
 
   return (
     <>
-      <section className="flex flex-col items-center gap-6 pb-16 pt-14 text-center sm:pt-24">
+      <section id="hero" className="flex scroll-mt-16 flex-col items-center gap-6 pb-16 pt-14 text-center sm:pt-24">
         <Reveal className="max-w-3xl">
           <h1 className="text-4xl font-bold leading-[1.1] tracking-[-0.035em] sm:text-6xl">
             <span className="rounded-full bg-accent px-4 text-bg sm:px-6">Escanea</span> cualquier repositorio de GitHub
@@ -31,7 +35,7 @@ export default function HomePage() {
             <button
               key={repo}
               onClick={() => goToReport(repo)}
-              className="rounded-full border border-border bg-surface px-3 py-1 font-mono text-text transition duration-200 hover:border-accent hover:text-accent"
+              className="rounded-full cursor-pointer border border-border bg-surface px-3 py-1 font-mono text-text transition duration-200 hover:border-accent hover:text-accent"
             >
               {repo}
             </button>
@@ -66,8 +70,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-12">
-        <HistoryPanel entries={SAMPLE_HISTORY} onSelect={(e) => goToReport(e.repo)} />
+      <section id="history" className="scroll-mt-16 py-12">
+        <HistoryPanel entries={entries} onSelect={openEntry} onClear={clear} />
       </section>
 
       <Reveal>
