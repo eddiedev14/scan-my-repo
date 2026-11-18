@@ -3,7 +3,7 @@ import type { AppError } from '@/shared/types'
 
 export const summarizeApi = axios.create({ timeout: 40000 })
 
-const DEFAULT_MESSAGE = 'No pudimos generar el resumen con AI'
+const DEFAULT_MESSAGE = 'No pudimos generar el resumen con IA.'
 
 function toAppError(error: unknown): AppError {
   if (!isAxiosError(error)) return { type: 'UNKNOWN', message: DEFAULT_MESSAGE }

@@ -109,7 +109,7 @@ function ReportView({ report, ai, errorAi, saved = false }: ViewProps) {
               </Card>
             ) : errorAi || !ai ? (
               <Card className="mt-12 text-center">
-                <p className="text-danger">{errorAi?.message ?? 'No pudimos cargar el resumen con AI.'}</p>
+                <p className="text-danger">{errorAi?.message ?? 'No pudimos cargar el resumen con IA.'}</p>
                 <Link to="/" data-export-ignore className="mt-3 inline-block text-sm text-accent-2 underline">
                   Volver al inicio
                 </Link>
