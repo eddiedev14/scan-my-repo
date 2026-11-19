@@ -34,6 +34,7 @@ jobs:
       - name: Deploy Worker
         uses: cloudflare/wrangler-action@v3 # usa una "acción", que es un paso ya hecho y publicado por otra persona.
         with:
+          wranglerVersion: '4.165.0' # misma versión que en local; la del action por defecto (3.90) no lee wrangler.jsonc
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
@@ -41,6 +42,7 @@ jobs:
       - name: Deploy Pages
         uses: cloudflare/wrangler-action@v3 #
         with:
+          wranglerVersion: '4.165.0' # misma versión que en local; la del action por defecto (3.90) no lee wrangler.jsonc
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=scan-my-repo --branch=main --commit-hash=${{ github.sha }}
