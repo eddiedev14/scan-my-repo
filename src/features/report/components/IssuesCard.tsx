@@ -1,7 +1,9 @@
 import { Card } from '@/shared/components/Card'
 
-// getIssues pide máximo 100 por página
+// getIssues pide una sola página de 100 registros y GitHub mezcla issues y PR; después de quitar los PR
+// no se sabe si hubo recorte, por eso la nota se muestra siempre
 const MAX_ISSUES = 100
+const NOTE = `Solo issues, sin pull requests. Se analizan los últimos ${MAX_ISSUES} registros de GitHub (issues y pull requests).`
 
 export function IssuesCard({ issues }: { issues: { open: number; closed: number } }) {
   const total = issues.open + issues.closed
@@ -13,7 +15,7 @@ export function IssuesCard({ issues }: { issues: { open: number; closed: number 
       {total === 0 ? (
         <>
           <p className="mt-4 text-sm text-muted">Este repositorio no tiene issues.</p>
-          <p className="mt-2 text-xs text-muted">Solo issues, sin pull requests.</p>
+          <p className="mt-2 text-xs text-muted">{NOTE}</p>
         </>
       ) : (
         <>
@@ -33,10 +35,7 @@ export function IssuesCard({ issues }: { issues: { open: number; closed: number 
           <p className="mt-2 text-sm text-muted">
             <span className="font-mono">{resolved}&nbsp;%</span> resueltos
           </p>
-          <p className="mt-4 text-xs text-muted">
-            Solo issues, sin pull requests.
-            {total >= MAX_ISSUES && ' Se analizaron hasta 100 issues.'}
-          </p>
+          <p className="mt-4 text-xs text-muted">{NOTE}</p>
         </>
       )}
     </Card>

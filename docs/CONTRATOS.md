@@ -19,7 +19,7 @@ createdAt: date
 languages: [{ name: string, percent: number }]            ordenado de mayor a menor, 1 decimal; [] si no hay
 contributors: [{ user: string, avatar: string, commits: number }]   máximo 10, orden de GitHub
 commitsPerWeek: [{ week: "AAAA-MM-DD" (lunes), commits: number }]   ascendente, con semanas en 0 incluidas; [] si no hay
-issues: { open: number, closed: number }                  sin pull requests, máximo 10 analizados
+issues: { open: number, closed: number }                  sin pull requests; se cuentan dentro de los últimos 100 registros de GitHub (issues y PR mezclados)
 readme: string|null        texto completo ya decodificado; null si no existe
 isEmptyRepo: boolean       true si el repositorio no tiene commits
 ```
