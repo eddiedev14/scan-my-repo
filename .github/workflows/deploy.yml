@@ -1,0 +1,46 @@
+# Despliega el Worker (/api) y el sitio en Cloudflare Pages con cada push a main
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Si llegan dos push seguidos, se cancela el deploy viejo
+concurrency:
+  group: deploy-main
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4 # Descarga el código
+
+      - uses: actions/setup-node@v4 # Instala Node 22
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci # Instala las dependencias
+
+      # Falla aquí si tsc o vite build fallan, antes de tocar producción
+      - run: npm run build
+
+      # Worker scan-my-repo-api (usa wrangler.jsonc; conserva el secret GROQ_API_KEY ya cargado)
+      #  La máquina de GitHub no tiene esa sesión, así que necesita una credencial
+      - name: Deploy Worker
+        uses: cloudflare/wrangler-action@v3 # usa una "acción", que es un paso ya hecho y publicado por otra persona.
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+
+      - name: Deploy Pages
+        uses: cloudflare/wrangler-action@v3 #
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=scan-my-repo --branch=main --commit-hash=${{ github.sha }}
