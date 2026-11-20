@@ -273,7 +273,3 @@ wrangler.jsonc      configuración del Worker
 ## Autores
 
 Eddie Santiago Delgado Campo · Christian David Home Acero · Manuel Betancurt Pérez
-
-## Licencia
-
-Sin licencia definida todavía. Proyecto académico (Proyecto Informático, UAO, 2026).
